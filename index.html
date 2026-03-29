@@ -443,12 +443,13 @@ function loadData() {
           // Convert Google Drive URL to embeddable format
           function driveImgUrl(url) {
             if(!url) return '';
-            const m1 = url.match(/\/file\/d\/([^\/\?]+)/);
-            if(m1) return 'https://lh3.googleusercontent.com/d/' + m1[1];
-            const m2 = url.match(/[?&]id=([^&]+)/);
-            if(m2) return 'https://lh3.googleusercontent.com/d/' + m2[1];
-            const m3 = url.match(/open\?id=([^&]+)/);
-            if(m3) return 'https://lh3.googleusercontent.com/d/' + m3[1];
+            url = url.split(',')[0].trim();
+            let fileId = '';
+            const m1 = url.match(/[\/]file[\/]d[\/]([^\/\?&]+)/);
+            if(m1) fileId = m1[1];
+            if(!fileId) { const m2 = url.match(/open\?id=([^&,\s]+)/); if(m2) fileId = m2[1]; }
+            if(!fileId) { const m3 = url.match(/[?&]id=([^&,\s]+)/); if(m3) fileId = m3[1]; }
+            if(fileId) return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w600';
             return url;
           }
           const photoSrc = driveImgUrl(photo);
