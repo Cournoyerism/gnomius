@@ -440,8 +440,20 @@ function loadData() {
           // Gallery card
           const card = document.createElement('div');
           card.className = 'gallery-card';
-          const imgHtml = photo
-            ? '<img class="gallery-card-img" src="' + photo + '" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=gallery-card-placeholder><svg width=48 height=48 viewBox=\\"0 0 48 48\\" fill=none><path d=\\"M24 4 C22 10 16 18 10 28 C6 34 4 40 4 46 L44 46 C44 40 42 34 38 28 C32 18 26 10 24 4Z\\" fill=\\"rgba(200,160,60,0.15)\\" stroke=\\"rgba(200,160,60,0.3)\\" stroke-width=\\"1\\"/></svg></div>\'" />'
+          // Convert Google Drive URL to embeddable format
+          function driveImgUrl(url) {
+            if(!url) return '';
+            const m1 = url.match(/\/file\/d\/([^\/\?]+)/);
+            if(m1) return 'https://lh3.googleusercontent.com/d/' + m1[1];
+            const m2 = url.match(/[?&]id=([^&]+)/);
+            if(m2) return 'https://lh3.googleusercontent.com/d/' + m2[1];
+            const m3 = url.match(/open\?id=([^&]+)/);
+            if(m3) return 'https://lh3.googleusercontent.com/d/' + m3[1];
+            return url;
+          }
+          const photoSrc = driveImgUrl(photo);
+          const imgHtml = photoSrc
+            ? '<img class="gallery-card-img" src="' + photoSrc + '" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=gallery-card-placeholder><svg width=48 height=48 viewBox=\\"0 0 48 48\\" fill=none><path d=\\"M24 4 C22 10 16 18 10 28 C6 34 4 40 4 46 L44 46 C44 40 42 34 38 28 C32 18 26 10 24 4Z\\" fill=\\"rgba(200,160,60,0.15)\\" stroke=\\"rgba(200,160,60,0.3)\\" stroke-width=\\"1\\"/></svg></div>\'" />'
             : '<div class="gallery-card-placeholder"><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><path d="M24 4 C22 10 16 18 10 28 C6 34 4 40 4 46 L44 46 C44 40 42 34 38 28 C32 18 26 10 24 4Z" fill="rgba(200,160,60,0.15)" stroke="rgba(200,160,60,0.3)" stroke-width="1"/></svg></div>';
           card.innerHTML = imgHtml + '<div class="gallery-card-body"><span class="gallery-card-name">' + name + '</span><span class="gallery-card-loc">' + loc + '</span>' + (quote ? '<span class="gallery-card-quote">&ldquo;' + quote + '&rdquo;</span>' : '') + '</div>';
           grid.appendChild(card);
